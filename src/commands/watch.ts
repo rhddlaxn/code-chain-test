@@ -22,7 +22,7 @@ export default async function watch(
 
         for (const tx of block.transactions) {
 
-            tx.hash().toString());
+            tx.hash().toString();
             if (tx.unsigned.type() === "pay") {
                 const { receiver, quantity }: {
                     receiver: PlatformAddress
