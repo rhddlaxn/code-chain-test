@@ -1,7 +1,7 @@
 import { SDK } from "codechain-sdk";
 import { Tracer } from "../tracer";
-import { Block } from "codechain-sdk/lib/core/classes";
-
+import { Block, Pay, U64 } from "codechain-sdk/lib/core/classes";
+import { PlatformAddress } from "codechain-primitives/lib";
 export default async function watch(
     sdk: SDK,
     tracer: Tracer,
@@ -16,8 +16,30 @@ export default async function watch(
     for (let blockNumber = from; ; blockNumber++) {
         const block = await eventallyGetBlock(sdk, blockNumber);
         console.log("block", block.number, block.hash.toString());
+        for (const tx of block.transactions) {
+            console.log("      tx", tx.unsigned.type(),
+                tx.hash().toString());
+            if (tx.unsigned.type() === "pay") {
+                const { receiver, quantity }: {
+                    receiver: PlatformAddress
+                    quantity: U64
+                }
+                    = tx.unsigned as any;
+                const sender = tx.getSignerAddress({
+                    networkId: "wc",
+                });
+                console.log("       Sender: ", sender.toString());
+                console.log("       Receiver", receiver.toString());
+                console.log("       Quantity", quantity.toLocaleString());
+
+            }
+
+
+        }
+
     }
 }
+
 
 async function eventallyGetBlock(
     sdk: SDK,
