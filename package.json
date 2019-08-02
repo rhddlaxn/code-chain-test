@@ -1,0 +1,14 @@
+{
+  "name": "miniwallet",
+  "version": "1.0.0",
+  "description": "mini-wallet",
+  "main": "src/index.ts",
+  "author": "AnSeongMin",
+  "license": "MIT",
+  "dependencies": {
+    "codechain-primitives": "^1.0.2",
+    "codechain-sdk": "^1.2.1",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
+  }
+}
