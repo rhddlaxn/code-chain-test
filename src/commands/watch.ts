@@ -8,6 +8,10 @@ export default async function watch(
     args: string[]
 ) {
     let from;
+    const address = tracer.state.address;
+    if (address === undefined) {
+        throw new Error("init 을 하세요 ");
+    }
     if (args.length > 0) {
         from = parseInt(args[0], 10);
     } else {
@@ -15,10 +19,10 @@ export default async function watch(
     }
     for (let blockNumber = from; ; blockNumber++) {
         const block = await eventallyGetBlock(sdk, blockNumber);
-        console.log("block", block.number, block.hash.toString());
+
         for (const tx of block.transactions) {
-            console.log("      tx", tx.unsigned.type(),
-                tx.hash().toString());
+
+            tx.hash().toString());
             if (tx.unsigned.type() === "pay") {
                 const { receiver, quantity }: {
                     receiver: PlatformAddress
@@ -28,10 +32,26 @@ export default async function watch(
                 const sender = tx.getSignerAddress({
                     networkId: "wc",
                 });
-                console.log("       Sender: ", sender.toString());
-                console.log("       Receiver", receiver.toString());
-                console.log("       Quantity", quantity.toLocaleString());
+                if (sender.toString() ==
+                    address.platformAddress.toString()) {
+                    //내가 보낸 트랜잭션    
+                    console.log({
+                        type: "send",
+                        receiver: receiver.toString(),
+                        quantity: quantity.toLocaleString(),
+                        fee: tx.unsigned.fee()!.toLocaleString(),
+                    });
 
+                } if (receiver.toString() ==
+                    address.platformAddress.toString()) {
+                    //내가 받은 트랜잭션
+                    console.log({
+                        type: "receive",
+                        sender: sender.toString(),
+                        quantity: quantity.toLocaleString(),
+                    });
+
+                }
             }
 
 
