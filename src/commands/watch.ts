@@ -19,6 +19,8 @@ export default async function watch(
     }
     for (let blockNumber = from; ; blockNumber++) {
         const block = await eventallyGetBlock(sdk, blockNumber);
+        console.log("block : ", blockNumber);
+
 
         for (const tx of block.transactions) {
 
